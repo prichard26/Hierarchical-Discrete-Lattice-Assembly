@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>STL Voxelizer</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="welcomeScreen">
+    <div class="welcome-message">
+      <h1>WELCOME TO THE DISCRETE ROBOTIC ASSEMBLY PIPELINE</h1>
+      <div class="spacer"></div>
+      <p>To start the process, choose one of our preloaded meshes or upload your own...</p>
+      <div class="mesh-options">
+        <div class="mesh-card" data-src="stl/2by2cube.stl">
+          <img src="images/2by2cube.png" alt="Mesh 1">
+          <div class="mesh-label">Cube </div>
+        </div>
+        <div class="mesh-card" data-src="stl/Rounded_Bench.stl">
+          <img src="images/Rounded_Bench.png" alt="Mesh 2">
+          <div class="mesh-label">Bench</div>
+        </div>
+        <div class="mesh-card" data-src="stl/Arche.stl">
+          <img src="images/Arche.png" alt="Mesh 3">
+          <div class="mesh-label">Arche</div>
+        </div>
+        <div class="mesh-card" data-src="stl/test.stl">
+          <img src="images/Sphere.png" alt="Mesh 4">
+          <div class="mesh-label">Sphere</div>
+        </div>
+      </div> <!-- .mesh-options -->
+      <div style="height: 2em; width: 100%; display: block;"></div>
+      <label class="file-upload">
+        <input type="file" id="uploadStart" accept=".stl" />
+        <span class="upload-label">Load Your Own File</span>
+      </label>
+    </div>
+  </div>
+  <div id="mainInterface" style="display: none;">
+    <div id="controls">
+      <h3>STL Voxelizer</h3>
+      <button id="voxelizeButton">Voxelize STL</button>
+      <button id="toggleVoxelOutlines">Show Voxel Outlines</button>
+
+      <h3>Pattern Detection:</h3>
+      <select id="patternType">
+        <option value="AAA">Choose your Voxelization method</option>
+        <option value="Voxelizer">Voxelizer</option>
+        <option value="Only2x2">Only 2x2</option>
+        <option value="Only2x3">Only 2x3</option>
+        <option value="Only2x4">Only 2x4</option>
+        <option value="Only2x4Stacked">Only 2x4 Stacked</option>
+        <option value="AllHierarchical">All of the above (Hierarchical)</option>
+        <option value="Constructible">Single Layer Constructible</option>
+      </select>
+      <button id="evaluateVoxelization">Evaluate Voxelization</button>
+
+
+      <div id="patternButtons">
+        <strong>Show Subpatterns:</strong>
+        <div id="patternButtonGroup"></div>
+      </div>
+
+
+
+
+      <button id="resetButton">Reset</button>
+<hr /><hr />
+
+<div class="assembly-parameters">
+  <h3>Assembly Setup</h3>
+  
+  <div class="assembly-row">
+    <label for="numRobotsFront">Front Robots</label><br />
+    <input type="range" id="numRobotsFront" min="0" max="2" value="1" />
+    <span id="numRobotsFrontValue">1</span>
+  </div>
+
+  <div class="assembly-row">
+    <label for="numRobotsBack">Back Robots</label><br />
+    <input type="range" id="numRobotsBack" min="0" max="2" value="0" />
+    <span id="numRobotsBackValue">0</span>
+  </div>
+
+  <div class="assembly-row">
+    <label for="numRobotsLeft">Left Robots</label><br />
+    <input type="range" id="numRobotsLeft" min="0" max="2" value="0" />
+    <span id="numRobotsLeftValue">0</span>
+  </div>
+
+  <div class="assembly-row">
+    <label for="numRobotsRight">Right Robots</label><br />
+    <input type="range" id="numRobotsRight" min="0" max="2" value="0" />
+    <span id="numRobotsRightValue">0</span>
+  </div>
+
+  <label for="supportType">Type of Support</label>
+  <select id="supportType">
+    <option value="stairs">stairs</option>
+    <option value="elevator">elevator</option>
+  </select>
+  <br />
+  <button id="simulateAssemblyButton">
+    Launch Robotic Assembly Simulation
+  </button>
+</div>
+
+<hr /><hr />
+    </div>
+
+    <div id="togglePanelBtn" class="toggle-btn">❌</div>
+    <div id="openPanelBtn" class="toggle-btn" style="display: none;">☰</div>
+  </div>
+
+  <script type="module" src="./Visualizer.js"></script>
+</body>
+</html>
+
+<script src="./javascript-lp-solver/src/solver.js"></script>
+
+

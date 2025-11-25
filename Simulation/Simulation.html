@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Software</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <div id="webgl"></div>
+
+    <div id="setup-screen" style="position:absolute;top:0;left:0;width:100%;height:100%;background:black;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;">
+        <h1 style="margin-bottom: 0.5em;">Welcome to the Digital Twin Simulator</h1>
+        <h2>Enter Map Size</h2>
+        <label>X: <input type="number" id="grid-x" value="6" style="width: 50px;"></label>
+        <label>Y: <input type="number" id="grid-y" value="5" style="width: 50px;"></label>
+        <button id="start-button" style="margin-top: 20px; font-size: 20px; padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Start
+        </button>
+    </div>
+ 
+    <script type="module">
+        import * as THREE from "./three/build/three.module.min.js";
+        import { BuildingSoftwareGUI, buildVoxelStructureFromJsonUrl } from "./Simulation.js";
+        import { initScene, scene, camera } from "./scene.js";
+        
+        const AUTO_LAUNCH = true;
+
+        function launch(xmin, xmax, ymin, ymax) {
+            document.getElementById("setup-screen").style.display = "none";
+            initScene(xmin, xmax, ymin, ymax);
+            window.gui = new BuildingSoftwareGUI(scene, camera, xmin, xmax, ymin, ymax);
+        }
+
+if (AUTO_LAUNCH) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const config = {
+        structureUrl: urlParams.get("structureUrl"),
+        xmin: parseFloat(urlParams.get("xmin")) || 0,
+        xmax: parseFloat(urlParams.get("xmax")) || 1,
+        ymin: parseFloat(urlParams.get("ymin")) || 0,
+        ymax: parseFloat(urlParams.get("ymax")) || 1
+    };
+    window.voxelMap = new Set();
+
+    const supportType = urlParams.get('supportType') || 'stairs';
+
+    // --- Injected: Parse additional parameters ---
+    const nbRobotFront = parseInt(urlParams.get('numRobotsFront')) || 0;
+    const nbRobotBack  = parseInt(urlParams.get('numRobotsBack'))  || 0;
+    const nbRobotLeft  = parseInt(urlParams.get('numRobotsLeft'))  || 0;
+    const nbRobotRight = parseInt(urlParams.get('numRobotsRight')) || 0;
+
+    window.nbRobotFront = nbRobotFront;
+    window.nbRobotBack  = nbRobotBack;
+    window.nbRobotLeft  = nbRobotLeft;
+    window.nbRobotRight = nbRobotRight;
+    window.supportType = supportType;
+    // --- End injected ---
+    // console.log("Parsed Parameters:");
+    // console.log("  ➤ stairDirection:", stairDirection);
+    // console.log("  ➤ stairSize:", stairSize);
+    // console.log("  ➤ numRobots:", numRobots);
+
+    // console.log("Parsed Config:", config);
+    launch(config.xmin, config.xmax, config.ymin, config.ymax);
+    if (config.structureUrl) {
+        buildVoxelStructureFromJsonUrl(config.structureUrl, scene)
+            .then(() => {
+                const structure = window.gui?.voxelTool?.buildList.map(v => ({
+                    type: v.type,
+                    centers: v.centers
+                })) || [];
+                import("./Simulation.js").then(mod => {
+                // Cho<<ose function based on supportType passed from Visualizer
+                const useElevator =
+                    (window.supportType || '').toLowerCase() === 'elevator' &&
+                    typeof mod.createElevatorSupport === 'function';
+
+                const runner = useElevator ? mod.createElevatorSupport : mod.buildStairsRobotSource;
+
+                return runner(
+                    window.nbRobotFront,
+                    window.nbRobotBack,
+                    window.nbRobotLeft,
+                    window.nbRobotRight,
+                    structure,
+                    scene
+                );
+                });
+            });
+    }
+} else {
+    document.getElementById("start-button").addEventListener("click", () => {
+        const gridX = parseInt(document.getElementById("grid-x").value);
+        const gridY = parseInt(document.getElementById("grid-y").value);
+        launch(0, gridX, 0, gridY);
+    });
+}
+    </script>
+
+</body>
+
+<!-- Modal for structure load mode selection -->
+<div id="load-mode-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:white; padding:20px; border-radius:10px; text-align:center;">
+    <p style="font-size:18px;">How do you want to load the structure?</p>
+    <button id="load-as-buildlist" style="margin:10px; padding:10px;">Build List</button>
+    <button id="load-as-real" style="margin:10px; padding:10px;">Place as Built</button>
+    <button id="load-cancel" style="margin:10px; padding:10px;">Cancel</button>
+  </div>
+</div>
+</html>

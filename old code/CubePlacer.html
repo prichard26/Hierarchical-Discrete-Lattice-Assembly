@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - interactive - voxel painter</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #f0f0f0;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+			.dg.ac {
+			  top: 40px !important;
+			}
+		</style>
+		<script src="https://cdn.jsdelivr.net/npm/three@0.155.0/examples/js/controls/OrbitControls.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"></script>
+	</head>
+	<body>
+
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - voxel painter - webgl<br>
+			<strong>click</strong>: add voxel, <strong>shift + click</strong>: remove voxel
+		</div>
+
+		<script type="module">
+
+			import * as THREE from './three/build/three.module.min.js';
+			import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js';
+
+			const dat = window.dat;
+
+			let camera, scene, renderer;
+			let plane;
+			let pointer, raycaster, isShiftDown = false;
+
+			let rollOverMesh, rollOverMaterial;
+			let cubeGeo;
+			let controls;
+
+			const objects = [];
+
+			// Throttling for pointer move
+			let lastMoveTime = 0;
+			const throttleDelay = 5; // milliseconds
+
+			let lastPointerPosition = new THREE.Vector2();
+			const moveThreshold = 1; // in pixels
+
+			const params = {
+				cubeColor: '#feb74c',
+				contourColor: '#ff0000'
+			};
+
+			init();
+			render();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 500, 800, 1300 );
+				camera.lookAt( 0, 0, 0 );
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xffffff );
+
+				// roll-over helpers (outlined wireframe cube)
+				const rollOverGeo = new THREE.BoxGeometry( 50, 50, 50 );
+				rollOverMaterial = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 5 } );
+				const rollOverEdges = new THREE.EdgesGeometry( rollOverGeo );
+				rollOverMesh = new THREE.LineSegments( rollOverEdges, rollOverMaterial );
+				scene.add( rollOverMesh );
+
+				// cubes
+
+				cubeGeo = new THREE.BoxGeometry( 50, 50, 50 );
+
+				// grid
+
+				// const gridHelper = new THREE.GridHelper( 1000, 20 );
+				// scene.add( gridHelper );
+
+				//
+
+				raycaster = new THREE.Raycaster();
+				pointer = new THREE.Vector2();
+
+				const geometry = new THREE.PlaneGeometry( 1000, 1000 );
+				geometry.rotateX( - Math.PI / 2 );
+
+				plane = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { visible: false } ) );
+				scene.add( plane );
+
+				objects.push( plane );
+
+				// lights
+
+				const ambientLight = new THREE.AmbientLight( 0x606060, 3 );
+				scene.add( ambientLight );
+
+				const directionalLight = new THREE.DirectionalLight( 0xffffff, 3 );
+				directionalLight.position.set( 1, 0.75, 0.5 ).normalize();
+				scene.add( directionalLight );
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				// Orbit Controls
+				controls = new OrbitControls(camera, renderer.domElement);
+				controls.enableDamping = true;
+
+				// dat.GUI Color Controls
+				const gui = new dat.GUI();
+
+				gui.addColor(params, 'cubeColor').name('Cube Color').onChange((value) => {
+					// no global cubeMaterial to update now
+				});
+
+				gui.addColor(params, 'contourColor').name('Contour Color').onChange((value) => {
+					rollOverMesh.material.color.set(value);
+				});
+
+				document.addEventListener( 'pointermove', onPointerMove, { passive: true } );
+				document.addEventListener( 'pointerdown', onPointerDown, { passive: true } );
+				document.addEventListener( 'keydown', onDocumentKeyDown );
+				document.addEventListener( 'keyup', onDocumentKeyUp );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				// No need to call render here, as the render loop is continuous
+			}
+
+			function onPointerMove( event ) {
+				const now = performance.now();
+				if (now - lastMoveTime < throttleDelay) return;
+				lastMoveTime = now;
+
+				pointer.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObjects( objects, false );
+				if ( intersects.length > 0 ) {
+					const intersect = intersects[0];
+					if (!intersect.face) return;
+					rollOverMesh.position.copy( intersect.point ).add( intersect.face.normal );
+					rollOverMesh.position.divideScalar( 50 ).floor().multiplyScalar( 50 ).addScalar( 25 );
+				}
+				lastPointerPosition.set(event.clientX, event.clientY);
+			}
+
+			function onPointerDown( event ) {
+				const dx = event.clientX - lastPointerPosition.x;
+				const dy = event.clientY - lastPointerPosition.y;
+				if (Math.sqrt(dx * dx + dy * dy) > moveThreshold) return;
+
+				pointer.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+				raycaster.setFromCamera( pointer, camera );
+				const intersects = raycaster.intersectObjects( objects, false );
+				if ( intersects.length > 0 ) {
+					const intersect = intersects[ 0 ];
+					// delete cube
+					if ( isShiftDown ) {
+						if ( intersect.object !== plane ) {
+							// Remove the voxel
+							scene.remove(intersect.object);
+							objects.splice(objects.indexOf(intersect.object), 1);
+
+							// Try to find the corresponding outline and remove it too
+							const outline = objects.find(obj =>
+								obj.type === 'LineSegments' &&
+								obj.position.equals(intersect.object.position)
+							);
+							if (outline) {
+								scene.remove(outline);
+								objects.splice(objects.indexOf(outline), 1);
+							}
+						}
+					} else {
+						const material = new THREE.MeshLambertMaterial({ color: new THREE.Color(params.cubeColor) });
+						const voxel = new THREE.Mesh(cubeGeo, material);
+						voxel.position.copy( intersect.point ).add( intersect.face.normal );
+						voxel.position.divideScalar( 50 ).floor().multiplyScalar( 50 ).addScalar( 25 );
+
+						const outlineGeo = new THREE.EdgesGeometry(cubeGeo);
+						const outlineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(params.contourColor), linewidth: 5 });
+						const outline = new THREE.LineSegments(outlineGeo, outlineMat);
+						outline.position.copy(voxel.position);
+
+						scene.add(voxel);
+						scene.add(outline);
+						objects.push(voxel);
+						objects.push(outline);
+					}
+				}
+			}
+
+			function onDocumentKeyDown(event) {
+				switch (event.keyCode) {
+					case 16:
+						isShiftDown = true;
+						break;
+					case 80: // 'P' key to delete last block
+						// Remove last cube and its outline
+						for (let i = objects.length - 1; i >= 0; i--) {
+							if (objects[i].type === 'Mesh') {
+								const voxel = objects[i];
+								scene.remove(voxel);
+								objects.splice(i, 1);
+
+								// Try to remove its corresponding outline
+								for (let j = objects.length - 1; j >= 0; j--) {
+									if (objects[j].type === 'LineSegments' && objects[j].position.equals(voxel.position)) {
+										scene.remove(objects[j]);
+										objects.splice(j, 1);
+										break;
+									}
+								}
+								break; // Only delete one voxel per press
+							}
+						}
+						break;
+				}
+			}
+
+			function onDocumentKeyUp( event ) {
+
+				switch ( event.keyCode ) {
+
+					case 16: isShiftDown = false; break;
+
+				}
+
+			}
+
+			function render() {
+				requestAnimationFrame(render);
+				if (controls) controls.update();
+				renderer.render(scene, camera);
+			}
+
+		</script>
+
+	</body>
+</html>

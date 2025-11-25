@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hierarchical Discrete Lattice Assembly</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .row {
+      flex: 1;
+      display: flex;
+    }
+
+    .box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .top-left    { background: #009688; }
+    .top-right   { background: #3f51b5; }
+    .bottom-left { background: #e91e63; }
+    .bottom-right{ background: #ff9800; }
+
+    .box:hover {
+      opacity: 0.9;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-banner, .bottom-banner {
+      position: relative;
+      width: 100%;
+      background: black;
+      color: white;
+      overflow: hidden;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .top-banner .scroll, .bottom-banner .scroll {
+      display: flex;
+      white-space: nowrap;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    .top-banner .scroll {
+      animation: scrollLeft 20s linear infinite;
+    }
+
+    .bottom-banner .scroll {
+      animation: scrollRight 20s linear infinite;
+    }
+
+    @keyframes scrollLeft {
+      0%   { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollRight {
+      0%   { transform: translateX(-50%); }
+      100% { transform: translateX(0%); }
+    }
+  </style>
+</head>
+<body>
+
+  <div style="height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
+    <div class="top-banner">
+      <div class="scroll">
+        <span>
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+        </span>
+        <span aria-hidden="true">
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="box top-left">
+        <a href="voxelizer/Visualizer.html" target="_blank">LIVE DEMO</a>
+      </div>
+      <div class="box top-right">
+        <a href="SCF_2025.pdf" target="_blank">PAPER</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="box bottom-left">
+        <a href="https://youtu.be/example" target="_blank">VIDEO</a>
+      </div>
+      <div class="box bottom-right">
+        <a href="https://gitlab.cba.mit.edu/paul-richard/discrete-robotic-assembly-scf" target="_blank">CODE</a>
+      </div>
+    </div>
+
+    <div class="bottom-banner">
+      <div class="scroll">
+        <span>
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly • 
+        </span>
+        <span aria-hidden="true">
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly •
+          SCF 2025: Hierarchical Discrete Robotic Lattice Assembly • 
+        </span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

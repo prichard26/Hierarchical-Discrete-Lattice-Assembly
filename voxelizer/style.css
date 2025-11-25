@@ -1,0 +1,307 @@
+.spacer {
+  margin: 2em 0;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #111;
+  color: white;
+}
+
+#controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 25vw;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 2vw;
+  padding-bottom: 5vh; /* Added to ensure last element is visible */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  border-radius: 0;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.file-upload {
+  display: block;
+  width: 100%;
+  height: 42px;
+  margin: 10px 0;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+#fileLabel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 42px;
+  background-color: #222;
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 14px;
+  color: white;
+  box-sizing: border-box;
+}
+
+button,
+select {
+  width: 100%;
+  margin: 1vh 0;
+  padding: 1.2vh 1vw;
+  font-size: 1vw;
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover,
+select:hover {
+  background-color: #333;
+}
+
+hr {
+  margin: 12px 0;
+  border: none;
+  border-top: 1px solid #333;
+}
+
+#patternButtons {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#patternButtonGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* ✅ 3 buttons per row */
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.patternFilterBtn {
+  background-color: #222;
+  border: 1px solid #555;
+  color: white;
+  padding: 10px 0;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;               /* Fills grid cell */
+  text-align: center;
+  box-sizing: border-box;    /* Padding stays inside cell */
+}
+
+.patternFilterBtn:hover {
+  background-color: #444;
+}
+
+#patternButtonGroup button[data-type="all"] {
+  flex-basis: 100%;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1000; /* ✅ Make sure it's above everything, especially the canvas */
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.7); /* Optional: slightly visible background */
+  color: white;
+  border: none;
+}
+ #welcomeScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    .welcome-message {
+      max-width: 800px;
+    }
+
+    .mesh-options {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 2.5em 0 1.5em;
+      flex-wrap: wrap;
+    }
+
+    .spacer {
+      margin: 2em 0;
+    }
+
+    .mesh-card {
+      background: #222;
+      border: 2px solid white;
+      border-radius: 20px;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .file-upload input[type="file"] {
+      display: none;
+    }
+
+    .upload-label {
+      background: white;
+      color: black;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    body {
+      background-color: black;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+
+    .welcome-message h1 {
+      font-size: 2.2em;
+      margin-bottom: 0.2em;
+    }
+
+    .welcome-message p {
+      font-size: 1.2em;
+      color: #ccc;
+      margin-bottom: 2.5em;
+    }
+
+    .mesh-options {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 1.5em;
+      flex-wrap: wrap;
+    }
+
+    .mesh-card {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid white;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .mesh-card:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .mesh-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .mesh-label {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      text-align: center;
+      font-size: 0.9em;
+      padding: 6px 0;
+      border-bottom-left-radius: 50%;
+      border-bottom-right-radius: 50%;
+    }
+
+    .file-upload {
+      margin-top: 1em;
+      display: flex;
+      justify-content: center;
+    }
+
+    .upload-label {
+      background: white;
+      color: black;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .upload-label:hover {
+      background: #ddd;
+    }
+
+.assembly-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+.assembly-row select {
+  flex: 0 0 120px;
+  margin-left: 10px;
+}
+
+.label, h3 {
+  font-size: 1vw;
+}
+
+label, h3 {
+  font-size: 1vw;
+}
+
+input[type="range"] {
+  width: 100%;
+}

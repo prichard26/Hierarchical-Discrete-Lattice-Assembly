@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "javascript-lp-solver": "^0.4.24",
+    "meshoptimizer": "^0.24.0",
+    "three-mesh-bvh": "^0.9.1"
+  }
+}

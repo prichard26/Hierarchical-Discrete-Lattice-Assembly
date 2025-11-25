@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <title>SCF 2025 Paper - Hierarchical Discrete Lattice Assembly</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+      background: #f5f5f5;
+    }
+
+    .pdf-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdf-header {
+      background: #333;
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .pdf-header h1 {
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .pdf-header a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+      background: #555;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .pdf-viewer {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #525252;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pdf-viewer embed,
+    .pdf-viewer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      min-height: 100%;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .pdf-header h1 {
+        font-size: 12px;
+      }
+
+      .pdf-header a {
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+
+      .pdf-viewer {
+        padding: 0;
+      }
+
+      .pdf-viewer embed,
+      .pdf-viewer iframe {
+        width: 100%;
+        min-height: 100vh;
+      }
+    }
+
+    /* For very small screens */
+    @media (max-width: 480px) {
+      .pdf-header {
+        padding: 8px 10px;
+      }
+
+      .pdf-header h1 {
+        font-size: 11px;
+        flex: 1;
+        margin-right: 10px;
+      }
+    }
+
+    /* Fallback for browsers that don't support PDF embedding */
+    .pdf-fallback {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .pdf-fallback a {
+      color: #4CAF50;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="pdf-container">
+    <div class="pdf-header">
+      <h1>SCF 2025: Hierarchical Discrete Lattice Assembly</h1>
+      <a href="index.html">← Back</a>
+    </div>
+    <div class="pdf-viewer">
+      <embed src="SCF_2025.pdf" type="application/pdf" />
+      <div class="pdf-fallback">
+        <p>Your browser may not support PDF embedding.</p>
+        <p><a href="SCF_2025.pdf" target="_blank">Click here to open the PDF</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fallback for browsers that don't support embed
+    window.addEventListener('load', function() {
+      const embed = document.querySelector('embed');
+      const fallback = document.querySelector('.pdf-fallback');
+      
+      // Check if embed failed to load
+      setTimeout(function() {
+        if (embed && embed.offsetHeight === 0) {
+          embed.style.display = 'none';
+          fallback.style.display = 'block';
+        }
+      }, 1000);
+
+      // Alternative: Use iframe for better mobile support
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        const iframe = document.createElement('iframe');
+        iframe.src = 'SCF_2025.pdf';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        
+        const viewer = document.querySelector('.pdf-viewer');
+        if (embed) {
+          embed.style.display = 'none';
+        }
+        viewer.insertBefore(iframe, viewer.firstChild);
+      }
+    });
+  </script>
+</body>
+</html>
+

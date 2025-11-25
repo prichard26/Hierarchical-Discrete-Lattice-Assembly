@@ -1,0 +1,4 @@
+venv/
+Bridge and Hardware/venv/
+.DS_Store
+*.DS_Store
